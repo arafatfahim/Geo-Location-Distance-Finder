@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+Calculate Distance
+{% endblock title %}
+
+{% block body %}
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Destination to {{ destination }} is</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {{distance}}Km
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <a href="/">
+            <button type="button" class="btn btn-primary">Search Again</button>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<form action="" method="POST">
+    {% csrf_token %}
+    <b>{{form | crispy}}</b>
+    <br>
+    <button type='submit' class='btn btn-primary'>Search</button>
+</form>
+<br>
+
+<hr>
+{% if request.POST and distance is not None %}
+    <script>
+        $(window).on('load',function(){
+            $('#exampleModal').modal('show')
+        })
+    </script>
+{% endif %}
+
+<h3><center>Map View</center></h3>
+<hr>
+<center>
+{{map|safe}}
+</center>
+
+
+{% endblock body %}
