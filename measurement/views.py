@@ -8,56 +8,59 @@ from geopy.distance import geodesic
 import folium
 from .utils import *
 
+
 # Create your views here.
 
 def calculate_des_view(request):
-    #initvale
+    # initvale
     distance = None
     destination = None
-    #obj = get_object_or_404(Measurement, id=1)
+    # obj = get_object_or_404(Measurement, id=1)
     form = MeasurementModelForm(request.POST or None)
     geolocator = Nominatim(user_agent='measurement')
     ip = get_ip(request)
-    #print(ip_)
-    #ip = '103.25.120.190'
+    # print(ip_)
+    # ip = '103.25.120.190'
     country, city, lat, lon = get_geo(ip)
-    #print('location country', country)
-    #print('location city', city)
-    #print('location lat', lat, lon)
+    # print('location country', country)
+    # print('location city', city)
+    # print('location lat', lat, lon)
 
-    location =geolocator.geocode(city)
-    #print('###', location)
-    #loc cordinate
+    location = geolocator.geocode(city)
+    # print('###', location)
+    # loc cordinate
     l_lat = lat
     l_lon = lon
-    pointA =(l_lat, l_lon)
-    #folium
+    pointA = (l_lat, l_lon)
+    # folium
     m = folium.Map(width=1080, height=720, location=get_center_cor(l_lat, l_lon))
-    #location marker
+    # location marker
     folium.Marker([l_lat, l_lon],
-         tooltip='click here for more', popup=city['city'], icon=folium.Icon(color='purple')).add_to(m)
+                  tooltip='click here for more', popup=city['city'], icon=folium.Icon(color='purple')).add_to(m)
     if form.is_valid():
         instance = form.save(commit=False)
         destination_ = form.cleaned_data.get('destination')
         destination = geolocator.geocode(destination_)
-        #print(destination)
-        #des cordinate
-        d_lat = destination.latitude        
-        d_lon = destination.longitude   
+        # print(destination)
+        # des cordinate
+        d_lat = destination.latitude
+        d_lon = destination.longitude
 
         pointB = (d_lat, d_lon)
-        #calculation
-        distance =round(geodesic(pointA,pointB).km, 2)
+        # calculation
+        distance = round(geodesic(pointA, pointB).km, 2)
 
-        #folium
-        m = folium.Map(width=800, height=500, location=get_center_cor(l_lat, l_lon, d_lat,d_lon), zoom_start=get_zoom(distance))
-        #location marker
+        # folium
+        m = folium.Map(width=800, height=500, location=get_center_cor(l_lat, l_lon, d_lat, d_lon),
+                       zoom_start=get_zoom(distance))
+        # location marker
         folium.Marker([l_lat, l_lon],
-            tooltip='click here for more', popup=city['city'], icon=folium.Icon(color='purple')).add_to(m)
-        #dest marker
+                      tooltip='click here for more', popup=city['city'], icon=folium.Icon(color='purple')).add_to(m)
+        # dest marker
         folium.Marker([d_lat, d_lon],
-            tooltip='click here for more', popup=destination, icon=folium.Icon(color='red', icon='cloud')).add_to(m)
-        #draw line
+                      tooltip='click here for more', popup=destination,
+                      icon=folium.Icon(color='red', icon='cloud')).add_to(m)
+        # draw line
         line = folium.PolyLine(locations=[pointA, pointB], weight=5, color='red')
         m.add_child(line)
         instance.location = location
@@ -66,12 +69,12 @@ def calculate_des_view(request):
 
     m = m._repr_html_()
 
-    context ={
-        'distance' : distance,
+    context = {
+        'distance': distance,
         'destination': destination,
-        'form' : form,
+        'form': form,
         'map': m,
-        'ip' :ip,
+        'ip': ip,
     }
 
-    return render (request, 'measurements/main.html', context)
+    return render(request, 'measurements/main.html', context)

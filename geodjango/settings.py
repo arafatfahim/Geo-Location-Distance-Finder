@@ -118,7 +118,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-STATICFILES_STORAGE =  'django.contrib.staticfiles.storage.StaticFilesStorage' 
+# STATICFILES_STORAGE =  'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 import os
 
@@ -129,7 +129,7 @@ GEOIP_PATH = os.path.join(BASE_DIR, 'geoip')
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
